@@ -32,17 +32,17 @@ current_last_part_index = 0
 
 def create_pulse(command):
     command_pulse = commands[command]
-
+    
     global current_last_part_index
     last_past_pulse = last_part[current_last_part_index]
-
+    
     logical_pulse = first_part.copy()
     logical_pulse.extend(command_pulse)
     logical_pulse.extend(last_past_pulse)
-
+    
     current_last_part_index = current_last_part_index + 1
     current_last_part_index = current_last_part_index % 3
-
+    
     mapped_pulse = [FIRST]
     for i in logical_pulse:
         if i == 0:
@@ -50,18 +50,27 @@ def create_pulse(command):
         else:
             val = HIGH
         mapped_pulse.append(val)
-
+    
     return mapped_pulse
 
 print('initialization complete')
 while True:
     command = ""
-    if cpx.button_a:
-        command = "oscillate"
-    elif cpx.button_b:
-        command = "power"
+    if cpx.switch:
+        if cpx.button_a:
+            command = "oscillate"
+        elif cpx.button_b:
+            command = "power"
+        else:
+            command = ""
     else:
-        command = ""
+        if cpx.button_a:
+            command = "fan_increase"
+        elif cpx.button_b:
+            command = "fan_decrease"
+        else:
+            command = ""
+
 
     if command != "":
         mapped_pulse = create_pulse(command)
